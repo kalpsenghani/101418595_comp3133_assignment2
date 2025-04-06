@@ -58,7 +58,7 @@ export class GraphqlService {
 
   // Get all employees
   getAllEmployees(): Observable<any> {
-    return this.apollo.watchQuery({
+    return this.apollo.query({
       query: gql`
         query GetAllEmployees {
           getAllEmployees {
@@ -76,8 +76,9 @@ export class GraphqlService {
             updated_at
           }
         }
-      `
-    }).valueChanges.pipe(map((result: any) => result.data.getAllEmployees));
+      `,
+      fetchPolicy: 'network-only' // Always fetch from network, not cache
+    }).pipe(map((result: any) => result.data.getAllEmployees));
   }
 
   // Get employee by ID

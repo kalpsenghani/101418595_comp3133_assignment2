@@ -18,7 +18,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { EmployeeService } from '../../../services/employee.service';
 import { ThemeService } from '../../../services/theme.service';
-import { filter, Subscription } from 'rxjs';
+import { filter, Subscription, BehaviorSubject, interval } from 'rxjs';
 
 @Component({
   selector: 'app-employee-list',
@@ -44,8 +44,19 @@ import { filter, Subscription } from 'rxjs';
   template: `
     <div class="list-container fade-in">
       <mat-card class="card">
-        <mat-card-header>
-          <mat-card-title>Employee List</mat-card-title>
+        <mat-card-header class="header-section">
+          <div class="header-content">
+            <mat-card-title class="header-title">
+              <mat-icon class="header-icon">people</mat-icon>
+              Employee List
+            </mat-card-title>
+            <div class="header-actions">
+              <button mat-raised-button color="primary" (click)="addEmployee()" class="add-button">
+                <mat-icon>add</mat-icon>
+                Add Employee
+              </button>
+            </div>
+          </div>
         </mat-card-header>
         <mat-card-content>
           <div class="table-actions">
@@ -53,7 +64,7 @@ import { filter, Subscription } from 'rxjs';
               <mat-form-field appearance="outline" class="search-field">
                 <mat-label>Search</mat-label>
                 <input matInput (keyup)="applyFilter($event)" placeholder="Search employees...">
-                <mat-icon matPrefix>search</mat-icon>
+                <mat-icon matPrefix class="search-icon">search</mat-icon>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="filter-field">
@@ -64,6 +75,7 @@ import { filter, Subscription } from 'rxjs';
                     {{dept}}
                   </mat-option>
                 </mat-select>
+                <mat-icon matPrefix class="filter-icon">business</mat-icon>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="filter-field">
@@ -74,13 +86,9 @@ import { filter, Subscription } from 'rxjs';
                     {{desig}}
                   </mat-option>
                 </mat-select>
+                <mat-icon matPrefix class="filter-icon">work</mat-icon>
               </mat-form-field>
             </div>
-
-            <button mat-raised-button color="primary" (click)="addEmployee()" class="add-button">
-              <mat-icon>add</mat-icon>
-              Add Employee
-            </button>
           </div>
 
           <div class="table-container">
@@ -113,7 +121,7 @@ import { filter, Subscription } from 'rxjs';
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
                 <td mat-cell *matCellDef="let employee">
                   <mat-chip-set>
-                    <mat-chip color="primary">{{employee.department}}</mat-chip>
+                    <mat-chip color="primary" class="department-chip">{{employee.department}}</mat-chip>
                   </mat-chip-set>
                 </td>
               </ng-container>
@@ -122,7 +130,7 @@ import { filter, Subscription } from 'rxjs';
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Designation</th>
                 <td mat-cell *matCellDef="let employee">
                   <mat-chip-set>
-                    <mat-chip color="accent">{{employee.designation}}</mat-chip>
+                    <mat-chip color="accent" class="designation-chip">{{employee.designation}}</mat-chip>
                   </mat-chip-set>
                 </td>
               </ng-container>
@@ -131,13 +139,13 @@ import { filter, Subscription } from 'rxjs';
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let employee">
                   <div class="action-buttons">
-                    <button mat-icon-button (click)="viewEmployee(employee.id)" class="action-button view-button">
+                    <button mat-icon-button (click)="viewEmployee(employee.id)" class="action-button view-button" matTooltip="View Details">
                       <mat-icon>visibility</mat-icon>
                     </button>
-                    <button mat-icon-button (click)="editEmployee(employee.id)" class="action-button edit-button">
+                    <button mat-icon-button (click)="editEmployee(employee.id)" class="action-button edit-button" matTooltip="Edit Employee">
                       <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button (click)="deleteEmployee(employee.id)" class="action-button delete-button">
+                    <button mat-icon-button (click)="deleteEmployee(employee.id)" class="action-button delete-button" matTooltip="Delete Employee">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </div>
@@ -146,7 +154,7 @@ import { filter, Subscription } from 'rxjs';
 
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-                  (click)="viewEmployee(row)"
+                  (click)="viewEmployee(row.id)"
                   class="table-row"></tr>
             </table>
 
@@ -160,35 +168,86 @@ import { filter, Subscription } from 'rxjs';
   `,
   styles: [`
     .list-container {
-      padding: var(--spacing-md);
-      max-width: 1250px;
+      padding: 16px;
+      height: calc(100vh - 32px);
+      max-width: 1200px;
       margin: 0 auto;
       background-color: var(--surface);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
     }
     
     .card {
-      margin-bottom: var(--spacing-lg);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0;
       border: none;
       box-shadow: none;
+      overflow: hidden;
+    }
+    
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-md);
+      padding: var(--spacing-md);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      color: white;
+    }
+    
+    .header-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
     }
     
     .table-actions {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--spacing-md);
+      margin: 16px 0;
       flex-wrap: wrap;
-      gap: var(--spacing-md);
-      padding: var(--spacing-md);
+      gap: 16px;
+      padding: 16px;
       background-color: var(--gray-100);
       border-radius: var(--radius-md);
     }
     
     .search-filters {
       display: flex;
-      gap: var(--spacing-md);
+      gap: 16px;
       flex: 1;
       flex-wrap: wrap;
       align-items: center;
@@ -204,41 +263,59 @@ import { filter, Subscription } from 'rxjs';
       min-width: 150px;
     }
     
+    .search-icon {
+      color: var(--primary);
+    }
+    
+    .filter-icon {
+      color: var(--accent);
+    }
+    
     .add-button {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-      height: 40px;
-      background-color: var(--primary);
+      background: var(--accent);
       color: white;
-      border-radius: var(--radius-sm);
-      transition: background-color var(--transition-normal);
-      margin-left: auto;
-      padding: 0 var(--spacing-md);
+      font-weight: 500;
+      padding: 0 var(--spacing-lg);
+      height: 40px;
+      border-radius: var(--radius-md);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
     .add-button:hover {
-      background-color: var(--primary-dark);
+      background: var(--accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .add-button mat-icon {
+      margin-right: var(--spacing-sm);
     }
     
     .table-container {
+      flex: 1;
       border-radius: var(--radius-md);
-      overflow: hidden;
-      margin-top: var(--spacing-md);
+      overflow: auto;
+      margin-top: 16px;
       box-shadow: var(--shadow-sm);
     }
     
     .employee-photo {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       object-fit: cover;
       box-shadow: var(--shadow-sm);
+      transition: transform 0.3s ease;
+    }
+    
+    .employee-photo:hover {
+      transform: scale(1.2);
     }
     
     .table-row {
       cursor: pointer;
-      transition: background-color var(--transition-fast);
+      transition: background-color 0.2s ease;
     }
     
     .table-row:hover {
@@ -249,42 +326,43 @@ import { filter, Subscription } from 'rxjs';
       display: inline-block;
     }
     
+    .department-chip {
+      background-color: var(--primary);
+      color: white;
+      transition: transform 0.3s ease;
+    }
+    
+    .department-chip:hover {
+      transform: translateY(-2px);
+    }
+    
+    .designation-chip {
+      background-color: var(--accent);
+      color: white;
+      transition: transform 0.3s ease;
+    }
+    
+    .designation-chip:hover {
+      transform: translateY(-2px);
+    }
+    
     .mat-column-actions {
-      width: 80px;
+      width: 120px;
       text-align: center;
     }
     
     .mat-column-employee_photo {
-      width: 80px;
-    }
-    
-    @media (max-width: 768px) {
-      .table-actions {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .search-filters {
-        flex-direction: column;
-      }
-      
-      .search-field, .filter-field {
-        width: 100%;
-      }
-      
-      .add-button {
-        width: 100%;
-        justify-content: center;
-      }
+      width: 60px;
     }
     
     .action-buttons {
       display: flex;
-      gap: var(--spacing-xs);
+      gap: 8px;
+      justify-content: center;
     }
     
     .action-button {
-      transition: transform var(--transition-normal);
+      transition: all 0.3s ease;
     }
     
     .action-button:hover {
@@ -314,6 +392,41 @@ import { filter, Subscription } from 'rxjs';
     .delete-button:hover {
       background-color: rgba(var(--danger-rgb), 0.1);
     }
+    
+    @media (max-width: 768px) {
+      .table-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-filters {
+        flex-direction: column;
+      }
+      
+      .search-field, .filter-field {
+        width: 100%;
+      }
+      
+      .add-button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   `]
 })
 export class EmployeeListComponent implements OnInit, OnDestroy {
@@ -327,6 +440,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     'actions'
   ];
   dataSource: any[] = [];
+  originalData: any[] = [];
   departments: string[] = [];
   designations: string[] = [];
   selectedDepartment = '';
@@ -337,21 +451,31 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   @ViewChild(MatTable) table!: MatTable<any>;
 
   private routerSubscription: Subscription;
+  private refreshSubscription: Subscription;
+  private refreshTrigger = new BehaviorSubject<boolean>(true);
 
   constructor(
     private employeeService: EmployeeService,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private themeService: ThemeService
   ) {
+    // Subscribe to router events to refresh data when navigating to this component
     this.routerSubscription = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
+      this.refreshTrigger.next(true);
+    });
+
+    // Set up a refresh subscription that will reload data when triggered
+    this.refreshSubscription = this.refreshTrigger.subscribe(() => {
       this.loadEmployees();
     });
   }
 
   ngOnInit() {
+    // Initial load
     this.loadEmployees();
   }
 
@@ -359,11 +483,15 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
+    }
   }
 
   loadEmployees() {
     this.employeeService.getAllEmployees().subscribe({
       next: (employees: any[]) => {
+        this.originalData = [...employees];
         this.dataSource = employees;
         this.extractDepartmentsAndPositions();
       },
@@ -389,7 +517,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       filterValue = (filterEvent.target as HTMLInputElement).value.toLowerCase().trim();
     }
     
-    let filteredData = [...this.dataSource];
+    let filteredData = [...this.originalData];
     
     // Apply text filter
     if (filterValue) {
@@ -427,6 +555,11 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
 
   editEmployee(employeeId: string) {
     this.router.navigate(['/employees/edit', employeeId]);
+  }
+
+  // Method to manually refresh the employee list
+  refreshEmployeeList() {
+    this.loadEmployees();
   }
 
   deleteEmployee(employeeId: string) {
