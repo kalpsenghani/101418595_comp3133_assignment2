@@ -15,7 +15,7 @@
 
 ## 🧩 Project Description
 
-This is a fully functional **Employee Management System** built using **Angular** for the frontend and **Node.js/GraphQL** for the backend. The application supports **CRUD operations**, **file upload**, **authentication**, and a **responsive UI** that mimics modern chat apps like WhatsApp.
+This is a fully functional **Employee Management System** built using **Angular** for the frontend and **Node.js/GraphQL** for the backend. The application supports **CRUD operations**, **file upload**, **authentication**, and a **responsive UI**.
 
 > Designed to be sleek, interactive, and production-ready — this app demonstrates full stack development and deployment best practices.
 
@@ -41,15 +41,6 @@ This is a fully functional **Employee Management System** built using **Angular*
 | Database     | MongoDB + Mongoose          |
 | Authentication | JWT (JSON Web Token)     |
 | Tools        | VS Code, Postman, Git/GitHub |
-
----
-
-## 🖼️ Screenshots
-
-
-| Login Page | Dashboard | Chat Bubble UI |
-|------------|-----------|----------------|
-| ![Login](assets/screens/login.png) | ![Dashboard](assets/screens/dashboard.png) | ![Chat](assets/screens/chat.png) |
 
 ---
 
