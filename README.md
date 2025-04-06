@@ -27,9 +27,7 @@ This is a fully functional **Employee Management System** built using **Angular*
 - 📋 **CRUD Operations** (Create, Read, Update, Delete Employees)
 - 🔎 **Search & Filter** Employees
 - 📂 **File Uploads** (e.g., profile pictures)
-- 💬 **Chat-Style Interface** for Employee Logs
 - 💅 **Modern Responsive UI** with SCSS
-- 🚀 **Deployed to Render / Vercel / etc.** *(if applicable)*
 
 ---
 
@@ -43,13 +41,11 @@ This is a fully functional **Employee Management System** built using **Angular*
 | Database     | MongoDB + Mongoose          |
 | Authentication | JWT (JSON Web Token)     |
 | Tools        | VS Code, Postman, Git/GitHub |
-| Optional     | Docker, Vercel/Render       |
 
 ---
 
 ## 🖼️ Screenshots
 
-> _UI resembles modern chat apps with white-themed components, mobile-first design, and interactive experience._
 
 | Login Page | Dashboard | Chat Bubble UI |
 |------------|-----------|----------------|
