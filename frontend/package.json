@@ -4,10 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "node --max-http-header-size=32768 ./node_modules/@angular/cli/bin/ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:frontend": "node dist/frontend/server/server.mjs"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {
@@ -24,7 +23,6 @@
     "@angular/router": "^19.2.0",
     "@angular/ssr": "^19.2.12",
     "@apollo/client": "^3.13.6",
-    "@nguniversal/express-engine": "^7.0.2",
     "apollo-angular": "^10.0.3",
     "express": "^4.18.2",
     "graphql": "^16.10.0",
