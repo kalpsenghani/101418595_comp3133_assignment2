@@ -28,7 +28,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "output": "/"
               }
             ],
             "styles": [
@@ -37,7 +38,6 @@
             ],
             "scripts": [],
             "server": "src/main.server.ts",
-            "outputMode": "server",
             "ssr": {
               "entry": "src/server.ts"
             }

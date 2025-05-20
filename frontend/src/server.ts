@@ -7,16 +7,12 @@ import {
 import express from 'express';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getPrerenderParams } from './app/prerender.config';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
-
-// Set the prerender params function
-(angularApp as any).getPrerenderParams = getPrerenderParams;
 
 /**
  * Example Express Rest API endpoints can be defined here.
