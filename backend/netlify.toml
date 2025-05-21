@@ -1,5 +1,5 @@
 [build]
-  command = "npm install && prisma generate"
+  command = "npm install && npx prisma generate"
   functions = "functions"
   publish = "public"
 
@@ -15,4 +15,5 @@
 [build.environment]
   NODE_VERSION = "18"
   PRISMA_CLI_QUERY_ENGINE_TYPE = "binary"
-  PRISMA_CLIENT_ENGINE_TYPE = "binary" 
+  PRISMA_CLIENT_ENGINE_TYPE = "binary"
+  PRISMA_SCHEMA_PATH = "prisma/schema.prisma" 
