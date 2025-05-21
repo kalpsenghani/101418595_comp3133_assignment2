@@ -1,6 +1,5 @@
 [build]
-  base = "frontend"
-  command = "npm install --legacy-peer-deps && npm run build"
+  command = "npm install && npm run build"
   publish = "dist/frontend"
 
 [[redirects]]
@@ -11,6 +10,6 @@
 [build.environment]
   NODE_VERSION = "18"
   NODE_ENV = "production"
-  API_URL = "https://your-backend-url.netlify.app/api"
-  GRAPHQL_URL = "https://your-backend-url.netlify.app/graphql"
-  SOCKET_URL = "https://your-backend-url.netlify.app" 
+  API_URL = "https://stunning-tulumba-f90485.netlify.app/api"
+  GRAPHQL_URL = "https://stunning-tulumba-f90485.netlify.app/graphql"
+  SOCKET_URL = "https://stunning-tulumba-f90485.netlify.app/" 
