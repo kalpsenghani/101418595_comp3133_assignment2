@@ -5,7 +5,7 @@
 
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["@prisma/client"]
+  external_node_modules = ["@prisma/client", "graphql", "apollo-server-lambda"]
 
 [[redirects]]
   from = "/graphql"

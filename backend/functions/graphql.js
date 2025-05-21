@@ -1,9 +1,13 @@
 const { ApolloServer } = require('apollo-server-lambda');
+const { PrismaClient } = require('@prisma/client');
 const connectDB = require('../src/database');
 const typeDefs = require('../src/schema/typeDefs');
 const userResolver = require('../src/resolvers/userResolver');
 const employeeResolver = require('../src/resolvers/employeeResolver');
 require('dotenv').config();
+
+// Initialize Prisma Client
+const prisma = new PrismaClient();
 
 // Connect to MongoDB
 connectDB();
@@ -12,6 +16,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers: [userResolver, employeeResolver],
   context: ({ event, context }) => ({
+    prisma,
     headers: event.headers,
     functionName: context.functionName,
     event,
