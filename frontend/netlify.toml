@@ -9,4 +9,8 @@
   status = 200
 
 [build.environment]
-  NODE_VERSION = "18" 
+  NODE_VERSION = "18"
+  NODE_ENV = "production"
+  API_URL = "https://your-backend-url.netlify.app/api"
+  GRAPHQL_URL = "https://your-backend-url.netlify.app/graphql"
+  SOCKET_URL = "https://your-backend-url.netlify.app" 

@@ -29,8 +29,10 @@ const server = new ApolloServer({
 // Create the handler
 const handler = server.createHandler({
   cors: {
-    origin: '*',
+    origin: process.env.CORS_ORIGIN || '*',
     credentials: true,
+    methods: ['POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   },
 });
 
@@ -41,9 +43,10 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 200,
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': process.env.CORS_ORIGIN || '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Credentials': 'true',
       },
       body: '',
     };
