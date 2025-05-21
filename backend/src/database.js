@@ -1,12 +1,13 @@
-const mongoose = require("mongoose");
-require("dotenv").config();
+const { PrismaClient } = require('@prisma/client');
+
+const prisma = new PrismaClient();
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.DATABASE_URL);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    await prisma.$connect();
+    console.log('Database connected successfully');
   } catch (error) {
-    console.error(`MongoDB Connection Error: ${error.message}`);
+    console.error('Database connection error:', error);
     process.exit(1);
   }
 };
